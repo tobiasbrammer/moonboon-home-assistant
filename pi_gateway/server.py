@@ -26,28 +26,35 @@ def is_moonboon(device, advertisement) -> bool:
 
 
 async def find_motor():
-    found = await BleakScanner.discover(timeout=8, return_adv=True)
-    for device, advertisement in found.values():
-        if is_moonboon(device, advertisement):
-            return device
-    return None
+    return await BleakScanner.find_device_by_filter(is_moonboon, timeout=8)
 
 
 async def send_command(command: str) -> None:
     with LOCK:
-        motor = await find_motor()
-        if motor is None:
-            raise LookupError("Moonboon motor was not found; press its Bluetooth button once")
-        acknowledged = asyncio.Event()
+        last_error: Exception | None = None
+        for attempt in range(2):
+            motor = await find_motor()
+            if motor is None:
+                raise LookupError("Moonboon motor was not found; press its Bluetooth button once")
+            acknowledged = asyncio.Event()
 
-        def notification(_, data: bytearray) -> None:
-            if b"rc" in data:
-                acknowledged.set()
+            def notification(_, data: bytearray) -> None:
+                if b"rc" in data:
+                    acknowledged.set()
 
-        async with BleakClient(motor, timeout=20) as client:
-            await client.start_notify(CONTROL_UUID, notification)
-            await client.write_gatt_char(CONTROL_UUID, encode_command(command), response=False)
-            await asyncio.wait_for(acknowledged.wait(), timeout=5)
+            try:
+                async with BleakClient(motor, timeout=15) as client:
+                    await client.start_notify(CONTROL_UUID, notification)
+                    await client.write_gatt_char(
+                        CONTROL_UUID, encode_command(command), response=False
+                    )
+                    await asyncio.wait_for(acknowledged.wait(), timeout=5)
+                    return
+            except Exception as err:
+                last_error = err
+                if attempt == 0:
+                    await asyncio.sleep(1)
+        raise last_error  # type: ignore[misc]
 
 
 class Handler(BaseHTTPRequestHandler):

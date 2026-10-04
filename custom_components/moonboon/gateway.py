@@ -28,7 +28,7 @@ class MoonboonGateway:
             try:
                 async with async_get_clientsession(self.hass).post(
                     f"http://{self.host}:8765/command/{command}",
-                    timeout=ClientTimeout(total=40),
+                    timeout=ClientTimeout(total=70),
                 ) as response:
                     result = await response.json()
                     if response.status != 200:
