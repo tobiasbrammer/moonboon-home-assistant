@@ -8,15 +8,18 @@ from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
 from .device import MoonboonDevice
+from .gateway import MoonboonGateway
 
 PLATFORMS = [Platform.BUTTON]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up a discovered motor."""
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = MoonboonDevice(
-        hass, entry.data["address"]
-    )
+    if "gateway_host" in entry.data:
+        device = MoonboonGateway(hass, entry.data["gateway_host"])
+    else:
+        device = MoonboonDevice(hass, entry.data["address"])
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = device
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 

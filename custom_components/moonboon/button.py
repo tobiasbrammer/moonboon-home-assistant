@@ -10,13 +10,14 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import COMMANDS, DOMAIN, NAME
 from .device import MoonboonDevice
+from .gateway import MoonboonGateway
 
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Create speed and transport buttons."""
-    device: MoonboonDevice = hass.data[DOMAIN][entry.entry_id]
+    device: MoonboonDevice | MoonboonGateway = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(MoonboonButton(device, action) for action in COMMANDS)
 
 
@@ -25,7 +26,7 @@ class MoonboonButton(ButtonEntity):
 
     _attr_has_entity_name = True
 
-    def __init__(self, device: MoonboonDevice, action: str) -> None:
+    def __init__(self, device: MoonboonDevice | MoonboonGateway, action: str) -> None:
         self._device = device
         self._action = action
         self._attr_unique_id = f"{device.address}_{action}"

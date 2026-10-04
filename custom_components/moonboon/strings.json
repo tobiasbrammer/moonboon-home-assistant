@@ -2,8 +2,10 @@
   "config": {
     "step": {
       "user": {"title": "Select Moonboon motor", "data": {"address": "Motor"}},
-      "bluetooth_confirm": {"title": "Add Moonboon Motor Connect", "description": "Add the discovered motor to Home Assistant?"}
+      "bluetooth_confirm": {"title": "Add Moonboon Motor Connect", "description": "Add the discovered motor to Home Assistant?"},
+      "gateway": {"title": "Connect through Raspberry Pi", "data": {"host": "Pi IP address"}}
     },
+    "error": {"cannot_connect": "Could not reach the Moonboon gateway on the Pi"},
     "abort": {
       "already_configured": "This motor is already configured",
       "no_devices_found": "No connectable Moonboon motor was found. Check the Bluetooth adapter or proxy and press the motor's Bluetooth button once.",

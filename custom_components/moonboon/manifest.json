@@ -1,7 +1,7 @@
 {
   "domain": "moonboon",
   "name": "Moonboon Motor Connect",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "documentation": "https://github.com/tobiasbrammer/moonboon-home-assistant#readme",
   "issue_tracker": "https://github.com/tobiasbrammer/moonboon-home-assistant/issues",
   "codeowners": ["@tobiasbrammer"],

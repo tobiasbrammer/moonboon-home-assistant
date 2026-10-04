@@ -1,0 +1,22 @@
+[Unit]
+Description=Moonboon Bluetooth gateway
+After=bluetooth.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/moonboon-gateway
+Environment=MOONBOON_HOST=192.168.1.10
+Environment=MOONBOON_ALLOWED_CLIENT=192.168.1.9
+ExecStart=/opt/moonboon-gateway/.venv/bin/python -m pi_gateway.server
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
