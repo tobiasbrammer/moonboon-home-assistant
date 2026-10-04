@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {"title": "Select Moonboon motor", "data": {"address": "Motor"}},
+      "bluetooth_confirm": {"title": "Add Moonboon Motor Connect", "description": "Add the discovered motor to Home Assistant?"}
+    },
+    "abort": {
+      "already_configured": "This motor is already configured",
+      "no_devices_found": "No connectable Moonboon motor was found. Check the Bluetooth adapter or proxy and press the motor's Bluetooth button once.",
+      "not_connectable": "The Bluetooth scanner cannot connect to this motor"
+    }
+  },
+  "entity": {
+    "button": {
+      "low": {"name": "Low (15)"},
+      "medium": {"name": "Medium (50)"},
+      "high": {"name": "High (100)"},
+      "start": {"name": "Start"},
+      "stop": {"name": "Stop"}
+    }
+  }
+}
